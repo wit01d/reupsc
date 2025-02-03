@@ -30,7 +30,7 @@ Imagine a future where system maintenance is a breeze. With **ReUpSc**, you'll n
 Simply execute the script:
 
 ```bash
-bash repository_update.sh
+bash reupsc.sh
 ```
 
 Follow the on-screen messages as the script:
