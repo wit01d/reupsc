@@ -47,4 +47,4 @@ No more broken package managers. No more wasted time. Just seamless updates, eve
 
 Feel free to modify any section further or let me know if you need additional details!
 
-![REUPSC Demo](bathroom/reupsc.png)
+![REUPSC Demo](bathroom/reupsc.webm)
