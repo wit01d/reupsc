@@ -43,7 +43,6 @@ Follow the on-screen messages as the script:
 ---
 
 No more broken package managers. No more wasted time. Just seamless updates, every time. Welcome to the future of hassle-free repository management with **ReUpSc**!
-```
 
 
 Feel free to modify any section further or let me know if you need additional details!
