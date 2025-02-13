@@ -1,4 +1,3 @@
-
 # ReUpSc (Repository Update Script)
 
 ## The Problem We All Know
@@ -34,6 +33,7 @@ bash reupsc.sh
 ```
 
 Follow the on-screen messages as the script:
+
 - Checks your current repository configuration.
 - Detects any architecture-related issues.
 - Creates backups and updates repository files.
@@ -43,7 +43,6 @@ Follow the on-screen messages as the script:
 ---
 
 No more broken package managers. No more wasted time. Just seamless updates, every time. Welcome to the future of hassle-free repository management with **ReUpSc**!
-
 
 Feel free to modify any section further or let me know if you need additional details!
 

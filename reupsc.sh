@@ -5,14 +5,13 @@ repository_update() {
     local arch_warning
     local repo_domain
     local repo_file
-    local TIMEOUT=300  # 5 minutes timeout
 
     echo "Starting repository update check..."
 
     # Remove root check since sudo is handled by calling function
 
     # Use timeout command with apt-get
-    update_output=$(timeout $TIMEOUT script -q -c "sudo apt-get update" /dev/null 2>&1) || {
+    update_output=$(script -q -c "sudo apt-get update" /dev/null 2>&1) || {
         local exit_code=$?
         if [ $exit_code -eq 124 ]; then
             echo "❌ apt-get update timed out after ${TIMEOUT} seconds"
@@ -31,7 +30,7 @@ repository_update() {
     if [ -z "$arch_warning" ]; then
         echo "✅ Repository configuration is correct - no architecture issues found"
         return 0
-    }
+    fi
 
     echo "⚠️ Found architecture warning:"
     echo "$arch_warning"
@@ -42,14 +41,14 @@ repository_update() {
     if [ -z "$repo_domain" ]; then
         echo "Could not extract repository domain."
         return 1
-    }
+    fi
 
     echo "Extracted repository domain: $repo_domain"
 
     # Locate the repository file that contains the domain and clean the output
-    repo_file=$(grep -Rl --exclude="*.bak" "^deb.*$repo_domain" /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null | 
-                head -n1 | 
-                sed 's/[[:space:]]*$//')
+    repo_file=$(grep -Rl --exclude="*.bak" "^deb.*$repo_domain" /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null |
+        head -n1 |
+        sed 's/[[:space:]]*$//')
     if [ -f "$repo_file" ]; then
         echo "✅ Found repository file: $repo_file"
         # Backup with timestamp
@@ -61,11 +60,11 @@ repository_update() {
         echo "✅ Backup created: $backup_file"
 
         # Modify with error checking
-        sudo sed -i.tmp '/^\s*deb / { /arch=amd64/! s|^deb\s\+\(\[[^]]*\]\)\?\s\+|deb [arch=amd64] | }' "$repo_file"
+        if ! sudo sed -i.tmp '/^\s*deb / { /arch=amd64/! s|^deb\s\+\(\[[^]]*\]\)\?\s\+|deb [arch=amd64] | }' "$repo_file"; then
             echo "❌ Failed to modify repository file"
             sudo cp "$backup_file" "$repo_file" && sudo chmod --reference="$backup_file" "$repo_file"
             return 1
-        }
+        fi
         rm -f "${repo_file}.tmp"
 
         # Verify file modification
@@ -73,7 +72,8 @@ repository_update() {
             echo "❌ Repository modification verification failed"
             sudo cp "$backup_file" "$repo_file" && sudo chmod --reference="$backup_file" "$repo_file"
             return 1
-        }
+        fi
+        rm -f "${backup_file}"
         echo "✅ Repository configuration updated successfully"
         echo "Current configuration in $repo_file:"
         cat "$repo_file"
@@ -98,6 +98,6 @@ repository_update() {
         echo "❌ Failed to update package lists after configuration change"
         echo "ℹ️ Restoring backup is recommended using: sudo cp '${backup_file}' '$repo_file'"
         return 1
-    }
+    fi
     echo "✅ Repository update completed successfully"
 }
